@@ -4,14 +4,34 @@ const _ = require('underscore');
 const counter = require('./counter');
 
 var items = {};
+/*
+00001: 'Brush Teeth',
+00002: 'Comb Hair',
+etc.etc.
+*/
 
 // Public API - Fix these CRUD functions ///////////////////////////////////////
 
 exports.create = (text, callback) => {
-  var id = counter.getNextUniqueId();
-  items[id] = text;
-  callback(null, { id, text });
+  counter.getNextUniqueId((err, id) => {
+    items[id] = text;
+    if (err) {
+      throw err;
+    }
+
+    fs.writeFile(exports.dataDir + '/' + id +'.txt',items[id], (err, data) => {
+      if (err) {
+        throw err;
+      } else {
+        console.log('Saved new file');
+        callback(null, { id, text });
+      }
+    });
+  });
 };
+
+
+//exports.dataDir = path.join(__dirname, 'data');
 
 exports.readAll = (callback) => {
   var data = [];
