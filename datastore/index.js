@@ -37,9 +37,9 @@ exports.readAll = (callback) => {
       throw err;
     } else {
       _.each(files, (file)=>{
-        let element = file.slice(0,-4)
-        data.push({id: element, text:element})
-      })
+        let element = file.slice(0, -4);
+        data.push({id: element, text: element});
+      });
       callback(null, data);
     }
   });
@@ -50,12 +50,20 @@ exports.readAll = (callback) => {
 
 exports.readOne = (id, callback) => {
   var text = items[id];
-  if (!text) {
-    callback(new Error(`No item with id: ${id}`));
-  } else {
-    callback(null, { id, text });
-  }
+  fs.readFile(exports.dataDir + '/' + id + '.txt', (err, data) => {
+    if (err) {
+      callback(new Error(`No item with id: ${id}`));
+    } else {
+      callback(null, {id, text});
+    } 
+  });
 };
+  
+  // if (!text) {
+  //     callback(new Error(`No item with id: ${id}`));
+  //   } else {
+  //     callback(null, { id, text });
+    
 
 exports.update = (id, text, callback) => {
   var item = items[id];
