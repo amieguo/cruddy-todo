@@ -23,7 +23,6 @@ exports.create = (text, callback) => {
       if (err) {
         throw err;
       } else {
-        console.log('Saved new file');
         callback(null, { id, text });
       }
     });
@@ -31,14 +30,22 @@ exports.create = (text, callback) => {
 };
 
 
-//exports.dataDir = path.join(__dirname, 'data');
-
 exports.readAll = (callback) => {
   var data = [];
-  _.each(items, (text, id) => {
-    data.push({ id, text });
+  fs.readdir(exports.dataDir, (err, files) => {
+    if (err) {
+      throw err;
+    } else {
+      _.each(files, (file)=>{
+        let element = file.slice(0,-4)
+        data.push({id: element, text:element})
+      })
+      callback(null, data);
+    }
   });
-  callback(null, data);
+  
+
+
 };
 
 exports.readOne = (id, callback) => {
